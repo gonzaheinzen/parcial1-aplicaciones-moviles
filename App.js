@@ -17,6 +17,7 @@ import LoginScreen from './src/screens/LoginScreen';
 import RegisterScreen from './src/screens/RegisterScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import CreateTaskScreen from './src/screens/CreateTaskScreen';
+import TaskDetailScreen from './src/screens/TaskDetailScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -66,6 +67,11 @@ export default function App() {
           name="CrearTarea"
           component={CreateTaskScreen}
           options={{ title: 'Nueva Tarea' }}
+        />
+        <Stack.Screen
+          name="DetalleTarea"
+          component={TaskDetailScreen}
+          options={{ title: 'Detalle de Tarea' }}
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -1,41 +1,19 @@
-import React, { useState, useCallback } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, Alert } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useFocusEffect } from '@react-navigation/native';
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList } from 'react-native';
+import { useTaskStore } from '../store/taskStore';
 import TaskItem from '../components/TaskItem';
 
 export default function HomeScreen({ navigation }) {
-  const [tasks, setTasks] = useState([]);
+  const tasks = useTaskStore((state) => state.tasks);
+  const deleteTask = useTaskStore((state) => state.deleteTask);
+  const logout = useTaskStore((state) => state.logout);
 
-  useFocusEffect(
-    useCallback(() => {
-      loadTasks();
-    }, [])
-  );
-
-  const loadTasks = async () => {
-    try {
-      const storedTasks = await AsyncStorage.getItem('tasks');
-      if (storedTasks) {
-        setTasks(JSON.parse(storedTasks));
-      }
-    } catch (error) {
-      console.log('Error al cargar tareas', error);
-    }
+  const handleDelete = (id) => {
+    deleteTask(id);
   };
 
-  const handleDelete = async (id) => {
-    try {
-      const updatedTasks = tasks.filter(task => task.id !== id);
-      setTasks(updatedTasks);
-      await AsyncStorage.setItem('tasks', JSON.stringify(updatedTasks));
-    } catch (error) {
-      Alert.alert('Error', 'No se pudo eliminar la tarea.');
-    }
-  };
-
-  const handleLogout = async () => {
-    await AsyncStorage.removeItem('isLoggedIn');
+  const handleLogout = () => {
+    logout();
     navigation.replace('Login');
   };
 
@@ -87,7 +65,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   listContainer: {
-    flex: 1, // La lista ocupa todo el espacio entonces los botones van abajo del todo
+    flex: 1,
   },
   emptyText: {
     color: '#aaa',
@@ -123,6 +101,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   bottomContainer: {
-    marginTop: 10, // Espacio entre la lista y los botones
+    marginTop: 10,
   },
 });

@@ -1,24 +1,25 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTaskStore } from '../store/taskStore';
 
 export default function RegisterScreen({ navigation }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const registerUser = useTaskStore((state) => state.registerUser);
 
-  const handleRegister = async () => {
+  const handleRegister = () => {
     if (!username || !password) {
       Alert.alert('Error', 'Por favor, completá todos los campos.');
       return;
     }
 
     try {
-      await AsyncStorage.setItem('user', JSON.stringify({ username, password }));
+      registerUser(username, password);
       Alert.alert('Éxito', 'Usuario registrado correctamente.', [
-        { text: 'OK', onPress: () => navigation.navigate('Login') }
+        { text: 'OK', onPress: () => navigation.navigate('Login') },
       ]);
     } catch (error) {
-      Alert.alert('Error', 'Hubo un problema al registrar el usuario.');
+      Alert.alert('Error', error.message || 'Hubo un problema al registrar el usuario.');
     }
   };
 
@@ -32,6 +33,7 @@ export default function RegisterScreen({ navigation }) {
         placeholderTextColor="#888"
         value={username}
         onChangeText={setUsername}
+        autoCapitalize="none"
       />
       <TextInput
         style={styles.input}
@@ -40,6 +42,7 @@ export default function RegisterScreen({ navigation }) {
         value={password}
         onChangeText={setPassword}
         secureTextEntry
+        autoCapitalize="none"
       />
 
       <TouchableOpacity style={styles.button} onPress={handleRegister}>

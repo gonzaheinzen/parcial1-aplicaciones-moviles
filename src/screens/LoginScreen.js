@@ -1,42 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useTaskStore } from '../store/taskStore';
 
 export default function LoginScreen({ navigation }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
-  useEffect(() => {
-    const checkLogin = async () => {
-      const loggedIn = await AsyncStorage.getItem('isLoggedIn');
-      if (loggedIn === 'true') {
-        navigation.replace('Home');
-      }
-    };
-    checkLogin();
-  }, []);
+  const isLoggedIn = useTaskStore((state) => state.isLoggedIn);
+  const login = useTaskStore((state) => state.login);
+  const users = useTaskStore((state) => state.users);
 
-  const handleLogin = async () => {
+  useEffect(() => {
+    if (isLoggedIn) {
+      navigation.replace('Home');
+    }
+  }, [isLoggedIn]);
+
+  const handleLogin = () => {
     if (!username || !password) {
       Alert.alert('Error', 'Por favor, completá todos los campos.');
       return;
     }
 
-    try {
-      const userDataStr = await AsyncStorage.getItem('user');
-      if (userDataStr) {
-        const userData = JSON.parse(userDataStr);
-        if (userData.username === username && userData.password === password) {
-          await AsyncStorage.setItem('isLoggedIn', 'true');
-          navigation.replace('Home');
-        } else {
-          Alert.alert('Error', 'Usuario o contraseña incorrectos.');
-        }
-      } else {
-        Alert.alert('Error', 'No hay ningún usuario registrado.');
-      }
-    } catch (error) {
-      Alert.alert('Error', 'Hubo un problema al iniciar sesión.');
+    const matchedUser = users.find(
+      (u) => u.username.toLowerCase() === username.toLowerCase() && u.password === password
+    );
+
+    if (matchedUser) {
+      login(matchedUser.username);
+      navigation.replace('Home');
+    } else {
+      Alert.alert('Error', 'Usuario o contraseña incorrectos.');
     }
   };
 
@@ -50,6 +44,7 @@ export default function LoginScreen({ navigation }) {
         placeholderTextColor="#888"
         value={username}
         onChangeText={setUsername}
+        autoCapitalize="none"
       />
       <TextInput
         style={styles.input}
@@ -58,6 +53,7 @@ export default function LoginScreen({ navigation }) {
         value={password}
         onChangeText={setPassword}
         secureTextEntry
+        autoCapitalize="none"
       />
 
       <TouchableOpacity style={styles.button} onPress={handleLogin}>
