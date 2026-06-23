@@ -76,4 +76,4 @@ Se escribieron 3 suites de pruebas que validan los componentes críticos en `src
 ## 🎥 Video DEMO (Parcial 1)
 Puedes ver una demostración de la aplicación inicial funcionando en el siguiente enlace:
 
-👉 [VIDEO DEMO PARCIAL 1]([https://drive.google.com/file/d/1WsMc3DfdOCWelDvFsje5B9WfDbBFQeh1/view?usp=sharing](https://drive.google.com/file/d/1WsMc3DfdOCWelDvFsje5B9WfDbBFQeh1/view?usp=drive_link))
+👉 [VIDEO DEMO PARCIAL 1](https://drive.google.com/file/d/1WsMc3DfdOCWelDvFsje5B9WfDbBFQeh1/view?usp=sharing](https://drive.google.com/file/d/1WsMc3DfdOCWelDvFsje5B9WfDbBFQeh1/view?usp=drive_link))
